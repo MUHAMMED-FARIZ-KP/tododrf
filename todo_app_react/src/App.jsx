@@ -94,7 +94,7 @@ const handleProjectSelect = (projectTodos, projectId, projectName) => {
       ) : (
         // Show TodoList with project heading if a project is selected
         <>
-          <h2 className="project">Project Name : {selectedProjectName}</h2>
+          <h2 className="project">Project: {selectedProjectName}</h2>
           <Search addTodo={addTodo} />
           <Filter filter_todo={filterTodo} />
           <TodoList

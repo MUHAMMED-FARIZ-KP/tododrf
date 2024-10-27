@@ -59,6 +59,6 @@ def project_list(request):
 @api_view(["GET"])
 def project_todos(request, pk):
     project = get_object_or_404(Projects, pk=pk)
-    todos = project.todos.all()
+    todos = project.todos.all() 
     serializer = TodoSerializer(todos, many=True)
     return Response(serializer.data)
