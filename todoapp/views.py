@@ -2,12 +2,11 @@ from django.shortcuts import render,get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from .models import Todo
-from .serializers import TodoSerializer
+from .models import Todo,Projects
+from .serializers import TodoSerializer,ProjectsSerializer
 from django.http import HttpResponse
 
 # Create your views here.
-
 @api_view(["GET","POST"])
 def todo_list(request):
     if request.method == "GET":
@@ -41,3 +40,25 @@ def todo_detail(request,pk):
     elif request.method=="DELETE":
         todo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(["GET","POST"])
+def project_list(request):
+    if request.method == "GET":
+        projects= Projects.objects.all()
+        serializer=ProjectsSerializer(projects,many=True)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        serializer=ProjectsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        
+        return  Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+def project_todos(request, pk):
+    project = get_object_or_404(Projects, pk=pk)
+    todos = project.todos.all()
+    serializer = TodoSerializer(todos, many=True)
+    return Response(serializer.data)

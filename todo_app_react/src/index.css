@@ -8,7 +8,7 @@
 
 body{
   /* background-color: #a459f4; */
-  background-color: #a459f4;
+  background-color: #505051;
   height: 100vh;
   width: 100%;
   display: flex;
@@ -74,14 +74,14 @@ select{
 }
 
 input:focus, select:focus{
-  outline: 1px solid #a459f4;
+  outline: 1px solid #505051;
 }
 
 .todo-search form button{
   height: 50px;
   width: 70px;
   padding: 0px 10px 0px 10px;
-  background-color: #a459f4;
+  background-color: #42947a;
   color: white;
   border: none;
   border-radius: 5px;
@@ -110,7 +110,7 @@ input:focus, select:focus{
   width: 40px;
   height: 40px;
   border-radius: 5px;
-  background-color: #a459f4;
+  background-color: #42947a;
   color: white;
   cursor: pointer;
   display: flex;
@@ -173,7 +173,7 @@ input:focus, select:focus{
   height: 40px;
   padding: 10px;
   border: none;
-  background-color: #a459f4;
+  background-color: #42947a;
   color: white;
   border-radius: 5px;
   cursor: pointer;
@@ -210,12 +210,12 @@ input:focus, select:focus{
 }
 
 .showbtn{ 
-  background: #a459f4;
+  background: #505051;
 }
 
 
 .btn-container .cancel{ 
-  background: #a459f4;
+  background: #42947a;
   margin-right: 10px;
 }
 
@@ -226,4 +226,89 @@ input:focus, select:focus{
 
 .strike{
   text-decoration: line-through;
+}
+
+/* Project List Container */
+.project-list {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.project-list h2 {
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Project Item Styling */
+.project-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin: 8px 0;
+  background-color: #f9f9f9;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.project-list-item:hover {
+  background-color: #f1f1f1;
+}
+
+/* Project Name Styling */
+.project-name {
+  font-size: 18px;
+  color: #333;
+}
+
+/* Optional button container if adding actions */
+.project-btn-container {
+  display: flex;
+  gap: 10px;
+  color: #666;
+  cursor: pointer;
+}
+
+.project-btn-container .edit,
+.project-btn-container .delete {
+  transition: color 0.2s ease-in-out;
+}
+
+.project-btn-container .edit:hover {
+  color: #009688; /* Edit button color */
+}
+
+.project-btn-container .delete:hover {
+  color: #e91e63; /* Delete button color */
+}
+/* App.css */
+
+.project{
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+  color: rgb(236, 229, 229);
+}
+.back-btn{
+  background: #42947a;
+  margin-right: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, color 0.3s ease;
+  color: white;
+
+  border-radius: 5px;
+}
+.back-btn:hover {
+  transform: scale(1.1); /* Slightly enlarge on hover */
+  color: #75fdcb; /* Change to a different color, e.g., blue */
 }
