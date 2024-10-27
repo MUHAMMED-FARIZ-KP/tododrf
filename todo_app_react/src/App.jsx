@@ -17,7 +17,7 @@ function App() {
 // add todo function
 const addTodo = (data) => {
   const originalTodos = [...todos];
-  axios.post("http://127.0.0.1:8000/todos", data)
+  axios.post("http://127.0.0.1:8000/todos/", data)
     .then(res => setTodos([...originalTodos, res.data]))
     .catch(err => {
         setErrors(err.message);
@@ -30,7 +30,7 @@ const addTodo = (data) => {
   const delTodo = (id) => {
     setTodos(todos.filter( todo => todo.id != id ))
     const originalTodos=[...todos]
-    axios.delete("http://127.0.0.1:8000/todos/" + id)
+    axios.delete(`http://127.0.0.1:8000/todos/${id}/`)
     .catch(err => {
       setErrors(err.message)
       setTodos(originalTodos)
@@ -45,7 +45,7 @@ const updateTodo = (e, id, text, todo) => {
 
   const updatedTodo = { ...todo, task: text, status: "Active" };
 
-  axios.patch(`http://127.0.0.1:8000/todos/${id}`, updatedTodo)
+  axios.put(`http://127.0.0.1:8000/todos/${id}/`, updatedTodo)
     .then((res) => {
       setTodos(todos.map(t => t.id === id ? res.data : t));
     })
