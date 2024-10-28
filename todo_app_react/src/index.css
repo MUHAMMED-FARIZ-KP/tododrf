@@ -434,3 +434,6 @@ input:focus, select:focus{
   padding: 10px;
   font-size: 16px;
 }
+.pending-todos,.completed-todos h3{
+  color: rgb(233, 217, 217);
+}

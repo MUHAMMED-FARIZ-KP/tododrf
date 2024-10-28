@@ -5,9 +5,9 @@ const Filter = ({filter_todo}) => {
     
     <select className="select-filter" name="" id="" onChange={((e) => filter_todo(e.target.value))}>
             {/* <option value="">All</option> */}
-            <option value="Active">Active</option>
+            <option value="Active">Pending</option>
             <option value="Completed">Completed</option>
-          </select>
+    </select>
     
   )
 }

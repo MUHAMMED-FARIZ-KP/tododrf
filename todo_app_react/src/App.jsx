@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Search from "./components/Search";
 import TodoList from "./components/TodoList";
-import Filter from "./components/Filter";
 import ProjectList from "./components/ProjectList";
 import { AiFillBackward } from "react-icons/ai";
 import { TbEdit } from "react-icons/tb";
@@ -15,6 +14,15 @@ function App() {
   const [editingProjectName, setEditingProjectName] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+
+  const [pendingTodos, setPendingTodos] = useState([]);
+  const [completedTodos, setCompletedTodos] = useState([]);
+
+  useEffect(() => {
+    // Separate todos into pending and completed on initial load or update
+    setPendingTodos(todos.filter((todo) => !todo.completed));
+    setCompletedTodos(todos.filter((todo) => todo.completed));
+  }, [todos]);
 
   const addTodo = (data) => {
     const todoData = { ...data, project: selectedProjectId };
@@ -50,17 +58,16 @@ function App() {
   };
 
   const completeTodo = (e, id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id
-          ? { ...todo, status: e.target.checked ? "Completed" : "Active" }
-          : todo
-      )
-    );
-  };
+    const isCompleted = e.target.checked;
+    const updatedTodo = todos.find((todo) => todo.id === id);
+    updatedTodo.completed = isCompleted;
 
-  const filterTodo = (cat_value) => {
-    setTodos(todos.filter((todo) => todo.status === cat_value));
+    axios
+      .put(`http://127.0.0.1:8000/todos/${id}/`, updatedTodo)
+      .then((res) => {
+        setTodos(todos.map((t) => (t.id === id ? res.data : t)));
+      })
+      .catch((err) => setErrors(err.message));
   };
 
   const handleProjectSelect = (projectTodos, projectId, projectName) => {
@@ -109,13 +116,36 @@ function App() {
           </div>
 
           <Search addTodo={addTodo} />
-          <Filter filter_todo={filterTodo} />
-          <TodoList
-            todos={todos}
-            delTodo={delTodo}
-            update_todo={updateTodo}
-            complete_todo={completeTodo}
-          />
+          <br></br>
+          <hr></hr>
+        <br></br>
+          {/* Display separate containers for Pending and Completed tasks */}
+          <div className="todo-lists">
+            <div className="pending-todos">
+              <h3>Pending Tasks</h3>
+              <br></br>
+              <TodoList
+                todos={pendingTodos}
+                delTodo={delTodo}
+                update_todo={updateTodo}
+                complete_todo={completeTodo}
+              />
+            </div>
+            <br></br>
+            <hr></hr>
+            <br></br>
+            <div className="completed-todos">
+              <h3>Completed Tasks</h3>
+              <br></br>
+              <TodoList
+                todos={completedTodos}
+                delTodo={delTodo}
+                update_todo={updateTodo}
+                complete_todo={completeTodo}
+              />
+            </div>
+          </div>
+
           <div className="btn-container">
             <div className="back-btn">
               <AiFillBackward size={45} onClick={handleBackToProjects} />
