@@ -62,3 +62,20 @@ def project_todos(request, pk):
     todos = project.todos.all() 
     serializer = TodoSerializer(todos, many=True)
     return Response(serializer.data)
+
+@api_view(["GET", "PUT", "DELETE", "PATCH"])
+def project_detail(request, pk):
+    project = get_object_or_404(Projects, pk=pk)
+
+    if request.method == 'GET':
+        serializer = ProjectsSerializer(project)
+        return Response(serializer.data)
+    elif request.method == 'PUT' or request.method == 'PATCH':
+        serializer = ProjectsSerializer(project, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "DELETE":
+        project.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

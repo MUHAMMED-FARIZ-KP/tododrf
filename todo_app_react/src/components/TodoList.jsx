@@ -72,7 +72,7 @@ const TodoList = ({todos, delTodo, update_todo, complete_todo, filter_todo}) => 
 
     { toggle &&  <div className="modal-container">
       <div className="modal">
-        <h1>Update Form</h1>
+        <h1>Update ToDo</h1>
 
 
           <form action="" onSubmit = { (e) => {update_todo(e, todoId, task); setToggle(false)} }>

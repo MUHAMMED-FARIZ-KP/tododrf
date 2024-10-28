@@ -4,34 +4,31 @@ import Search from "./components/Search";
 import TodoList from "./components/TodoList";
 import Filter from "./components/Filter";
 import ProjectList from "./components/ProjectList";
-import { AiFillBackward, AiFillDelete } from 'react-icons/ai';
+import { AiFillBackward } from "react-icons/ai";
+import { TbEdit } from "react-icons/tb";
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [errors, setErrors] = useState("");
-  const [projectSelected, setProjectSelected] = useState(false); // Track if a project is selected
-  const [selectedProjectName, setSelectedProjectName] = useState(""); // Store selected project name
+  const [projectSelected, setProjectSelected] = useState(false);
+  const [selectedProjectName, setSelectedProjectName] = useState("");
+  const [editingProjectName, setEditingProjectName] = useState(false);
+  const [newProjectName, setNewProjectName] = useState("");
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
-  // Add todo function
-  // Add todo function
-// Add todo function
-const addTodo = (data) => {
-  // Ensure the project ID is added to the data object
-  const todoData = { ...data, project: selectedProjectId }; // Assuming selectedProjectId holds the ID of the selected project
-  const originalTodos = [...todos];
+  const addTodo = (data) => {
+    const todoData = { ...data, project: selectedProjectId };
+    const originalTodos = [...todos];
 
-  axios
-    .post("http://127.0.0.1:8000/todos/", todoData)
-    .then((res) => setTodos([...originalTodos, res.data]))
-    .catch((err) => {
-      setErrors(err.message);
-      setTodos(originalTodos);
-    });
-};
+    axios
+      .post("http://127.0.0.1:8000/todos/", todoData)
+      .then((res) => setTodos([...originalTodos, res.data]))
+      .catch((err) => {
+        setErrors(err.message);
+        setTodos(originalTodos);
+      });
+  };
 
-
-
-  // Delete function
   const delTodo = (id) => {
     const originalTodos = [...todos];
     setTodos(todos.filter((todo) => todo.id !== id));
@@ -41,11 +38,9 @@ const addTodo = (data) => {
     });
   };
 
-  // Update function
   const updateTodo = (e, id, text, todo) => {
     e.preventDefault();
     const updatedTodo = { ...todo, task: text, project: selectedProjectId };
-  
     axios
       .put(`http://127.0.0.1:8000/todos/${id}/`, updatedTodo)
       .then((res) => {
@@ -60,7 +55,7 @@ const addTodo = (data) => {
         todo.id === id
           ? { ...todo, status: e.target.checked ? "Completed" : "Active" }
           : todo
-        )
+      )
     );
   };
 
@@ -68,33 +63,51 @@ const addTodo = (data) => {
     setTodos(todos.filter((todo) => todo.status === cat_value));
   };
 
-  // Handle project selection
-const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const handleProjectSelect = (projectTodos, projectId, projectName) => {
+    setTodos(projectTodos);
+    setSelectedProjectId(projectId);
+    setProjectSelected(true);
+    setSelectedProjectName(projectName);
+    setNewProjectName(projectName);
+  };
 
-const handleProjectSelect = (projectTodos, projectId, projectName) => {
-  setTodos(projectTodos);
-  setSelectedProjectId(projectId);  // Set the project ID here
-  setProjectSelected(true);
-  setSelectedProjectName(projectName);
-};
-
-  // Handle back button to show project list
   const handleBackToProjects = () => {
     setProjectSelected(false);
-    setSelectedProjectName(""); // Reset project name
+    setSelectedProjectName("");
   };
-  
+
+  const handleEditProjectName = () => {
+    setEditingProjectName(true);
+  };
+
+  const handleSaveProjectName = () => {
+    axios
+      .put(`http://127.0.0.1:8000/projects/${selectedProjectId}/`, {
+        name: newProjectName,
+      })
+      .then(() => {
+        setSelectedProjectName(newProjectName);
+        setEditingProjectName(false);
+      })
+      .catch((err) => setErrors(err.message));
+  };
 
   return (
     <div className="todo-container">
       {errors && <p>{errors}</p>}
       {!projectSelected ? (
-        // Show ProjectList if no project is selected
         <ProjectList setTodos={handleProjectSelect} />
       ) : (
-        // Show TodoList with project heading if a project is selected
         <>
-          <h2 className="project">Project: {selectedProjectName}</h2>
+          <div className="project-header">
+            <div className="project-name-container">
+              <h2 className="project">Project: {selectedProjectName}</h2>
+              <button className="edit-button" onClick={handleEditProjectName}>
+                <TbEdit size={20} />
+              </button>
+            </div>
+          </div>
+
           <Search addTodo={addTodo} />
           <Filter filter_todo={filterTodo} />
           <TodoList
@@ -104,9 +117,44 @@ const handleProjectSelect = (projectTodos, projectId, projectName) => {
             complete_todo={completeTodo}
           />
           <div className="btn-container">
-            <div className="back-btn"><AiFillBackward size={45} onClick={handleBackToProjects} /></div>
-            
+            <div className="back-btn">
+              <AiFillBackward size={45} onClick={handleBackToProjects} />
+            </div>
           </div>
+
+          {/* Project Name Update Modal */}
+          {editingProjectName && (
+            <div className="modal-container">
+              <div className="modal">
+                <h1>Update Project Name</h1>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSaveProjectName();
+                  }}
+                >
+                  <input
+                    type="text"
+                    placeholder="Update Project Name"
+                    value={newProjectName}
+                    onChange={(e) => setNewProjectName(e.target.value)}
+                    required
+                  />
+                  <button type="submit" id="add">
+                    Save
+                  </button>
+                </form>
+                <div className="btn-container">
+                  <button
+                    className="cancel mod-btn"
+                    onClick={() => setEditingProjectName(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
