@@ -1,13 +1,50 @@
 from django.shortcuts import render,get_object_or_404
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework import status
 from .models import Todo,Projects
 from .serializers import TodoSerializer,ProjectsSerializer
 from django.http import HttpResponse
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.hashers import make_password
 
 # Create your views here.
+
+
+
+
+@api_view(['POST'])
+def register_user(request):
+    data = request.data
+    try:
+        user = User.objects.create(
+            username=data['username'],
+            password=make_password(data['password'])
+        )
+        return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["POST"])
+def login_user(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+    user = authenticate(username=username, password=password)
+    if user:
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        })
+    return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
 @api_view(["GET","POST"])
+@permission_classes([IsAuthenticated])
 def todo_list(request):
     if request.method == "GET":
         todos= Todo.objects.all()
@@ -23,6 +60,7 @@ def todo_list(request):
     
 
 @api_view(["GET","PUT","DELETE","PATCH"])
+@permission_classes([IsAuthenticated])
 def todo_detail(request,pk):
     todo=get_object_or_404(Todo,id=pk)
 
@@ -42,6 +80,7 @@ def todo_detail(request,pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(["GET","POST"])
+@permission_classes([IsAuthenticated])
 def project_list(request):
     if request.method == "GET":
         projects= Projects.objects.all()
@@ -57,6 +96,7 @@ def project_list(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def project_todos(request, pk):
     project = get_object_or_404(Projects, pk=pk)
     todos = project.todos.all() 
@@ -64,6 +104,7 @@ def project_todos(request, pk):
     return Response(serializer.data)
 
 @api_view(["GET", "PUT", "DELETE", "PATCH"])
+@permission_classes([IsAuthenticated])
 def project_detail(request, pk):
     project = get_object_or_404(Projects, pk=pk)
 

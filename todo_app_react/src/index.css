@@ -437,3 +437,80 @@ input:focus, select:focus{
 .pending-todos,.completed-todos h3{
   color: rgb(233, 217, 217);
 }
+
+/* src/components/Login.css */
+.login-container {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  
+}
+.login-container h2{
+  color: white;
+  font-size: 30px;
+  text-align: center;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #42947a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.register-container{
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+
+}
+.register-container h2{
+  color: white;
+  font-size: 30px;
+  text-align: center;
+}
+.register-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+.register-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #42947a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.question{
+  background-color: #ebebeb;
+  color: red  ;
+  margin-left: 30%;
+  margin-top: 12px;
+  border-radius: 2px;
+}
+.logout-btn{
+  width: 80px;
+  padding: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  margin-left: 40%;
+}

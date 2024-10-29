@@ -3,6 +3,8 @@ import axios from "axios";
 import Search from "./components/Search";
 import TodoList from "./components/TodoList";
 import ProjectList from "./components/ProjectList";
+import Login from "./components/Login";
+import Register from "./components/Register";  // Import the Register component
 import { AiFillBackward } from "react-icons/ai";
 import { TbEdit } from "react-icons/tb";
 
@@ -17,66 +19,133 @@ function App() {
 
   const [pendingTodos, setPendingTodos] = useState([]);
   const [completedTodos, setCompletedTodos] = useState([]);
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
 
+  // State to toggle between login and registration
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  // Store token in local storage and set axios headers
   useEffect(() => {
-    // Separate todos into pending and completed on initial load or update
-    setPendingTodos(todos.filter((todo) => !todo.completed));
-    setCompletedTodos(todos.filter((todo) => todo.completed));
-  }, [todos]);
+    if (token) {
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      localStorage.removeItem("token");
+      delete axios.defaults.headers.common["Authorization"];
+    }
+  }, [token]);
 
-  const addTodo = (data) => {
+  // Separate todos into pending and completed on initial load or update
+  useEffect(() => {
+    if (token) {
+      fetchTodos();
+    }
+  }, [token]);
+
+  const fetchTodos = async (projectId) => {
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/projects/${projectId}/todos/`);
+        setTodos(response.data);
+        setPendingTodos(response.data.filter((todo) => !todo.completed));
+        setCompletedTodos(response.data.filter((todo) => todo.completed));
+    } catch (error) {
+        setErrors(error.message);
+    }
+};
+
+const addTodo = (data) => {
     const todoData = { ...data, project: selectedProjectId };
-    const originalTodos = [...todos];
 
     axios
       .post("http://127.0.0.1:8000/todos/", todoData)
-      .then((res) => setTodos([...originalTodos, res.data]))
-      .catch((err) => {
-        setErrors(err.message);
-        setTodos(originalTodos);
-      });
-  };
+      .then(() => {
+          fetchTodos(selectedProjectId); // Re-fetch todos after adding
+      })
+      .catch((err) => setErrors(err.message));
+};
 
-  const delTodo = (id) => {
-    const originalTodos = [...todos];
-    setTodos(todos.filter((todo) => todo.id !== id));
-    axios.delete(`http://127.0.0.1:8000/todos/${id}/`).catch((err) => {
+const delTodo = async (id) => {
+  const originalTodos = [...todos];
+  
+  // Optimistically remove the todo from the state
+  const updatedTodos = todos.filter((todo) => todo.id !== id);
+  setTodos(updatedTodos);
+  setPendingTodos(updatedTodos.filter((todo) => !todo.completed));
+  setCompletedTodos(updatedTodos.filter((todo) => todo.completed));
+
+  try {
+      await axios.delete(`http://127.0.0.1:8000/todos/${id}/`);
+  } catch (err) {
       setErrors(err.message);
+      // Revert to original state if there's an error
       setTodos(originalTodos);
-    });
-  };
+      setPendingTodos(originalTodos.filter((todo) => !todo.completed));
+      setCompletedTodos(originalTodos.filter((todo) => todo.completed));
+  }
+};
 
-  const updateTodo = (e, id, text, todo) => {
-    e.preventDefault();
-    const updatedTodo = { ...todo, task: text, project: selectedProjectId };
-    axios
-      .put(`http://127.0.0.1:8000/todos/${id}/`, updatedTodo)
-      .then((res) => {
-        setTodos(todos.map((t) => (t.id === id ? res.data : t)));
-      })
-      .catch((err) => setErrors(err.message));
-  };
 
-  const completeTodo = (e, id) => {
+const updateTodo = async (e, id, text, todo) => {
+  e.preventDefault();
+  const updatedTodo = { ...todo, task: text, project: selectedProjectId };
+
+  // Optimistically update the state
+  const updatedTodos = todos.map((t) => (t.id === id ? updatedTodo : t));
+  setTodos(updatedTodos);
+  setPendingTodos(updatedTodos.filter((todo) => !todo.completed));
+  setCompletedTodos(updatedTodos.filter((todo) => todo.completed));
+
+  try {
+      const res = await axios.put(`http://127.0.0.1:8000/todos/${id}/`, updatedTodo);
+      // Update the specific todo with the response data
+      const finalTodos = todos.map((t) => (t.id === id ? res.data : t));
+      setTodos(finalTodos);
+      setPendingTodos(finalTodos.filter((todo) => !todo.completed));
+      setCompletedTodos(finalTodos.filter((todo) => todo.completed));
+  } catch (err) {
+      setErrors(err.message);
+      // Revert to the original todo if there's an error
+      setTodos(todos.map((t) => (t.id === id ? todo : t)));
+      setPendingTodos(todos.filter((todo) => !todo.completed));
+      setCompletedTodos(todos.filter((todo) => todo.completed));
+  }
+};
+
+
+
+  const completeTodo = async (e, id) => {
     const isCompleted = e.target.checked;
-    const updatedTodo = todos.find((todo) => todo.id === id);
-    updatedTodo.completed = isCompleted;
+    const updatedTodo = { ...todos.find((todo) => todo.id === id), completed: isCompleted };
 
-    axios
-      .put(`http://127.0.0.1:8000/todos/${id}/`, updatedTodo)
-      .then((res) => {
-        setTodos(todos.map((t) => (t.id === id ? res.data : t)));
-      })
-      .catch((err) => setErrors(err.message));
-  };
+    // Optimistically update the UI immediately
+    setTodos((prevTodos) => prevTodos.map((t) => (t.id === id ? updatedTodo : t)));
+    setPendingTodos(todos.filter((todo) => !todo.completed));
+    setCompletedTodos(todos.filter((todo) => todo.completed));
 
-  const handleProjectSelect = (projectTodos, projectId, projectName) => {
-    setTodos(projectTodos);
-    setSelectedProjectId(projectId);
-    setProjectSelected(true);
-    setSelectedProjectName(projectName);
-    setNewProjectName(projectName);
-  };
+    try {
+        await axios.put(`http://127.0.0.1:8000/todos/${id}/`, updatedTodo);
+    } catch (err) {
+        setErrors(err.message);
+        // Revert the UI update if the request fails
+        setTodos((prevTodos) =>
+            prevTodos.map((t) => (t.id === id ? { ...t, completed: !isCompleted } : t))
+        );
+        setPendingTodos(todos.filter((todo) => !todo.completed));
+        setCompletedTodos(todos.filter((todo) => todo.completed));
+    }
+};
+
+
+const handleProjectSelect = (projectTodos, projectId, projectName) => {
+  if (projectId) {
+      setProjectSelected(true);
+      setSelectedProjectId(projectId);
+      setSelectedProjectName(projectName);
+      fetchTodos(projectId); // Fetch todos specific to the selected project
+  } else {
+      console.error("Invalid Project ID:", projectId);
+  }
+};
 
   const handleBackToProjects = () => {
     setProjectSelected(false);
@@ -85,6 +154,7 @@ function App() {
 
   const handleEditProjectName = () => {
     setEditingProjectName(true);
+    setNewProjectName(selectedProjectName); // Set the input field to the current project name
   };
 
   const handleSaveProjectName = () => {
@@ -99,9 +169,37 @@ function App() {
       .catch((err) => setErrors(err.message));
   };
 
+  const handleLogout = () => {
+    setToken("");
+    setTodos([]);
+    setErrors("");
+  };
+
+  const handleRegistrationSuccess = () => {
+    setIsRegistering(false);  // Switch to login view after successful registration
+  };
+
+  // Render login or registration form if the user is not authenticated
+  if (!token) {
+    return (
+      <div>
+        {isRegistering ? (
+          <Register onRegistrationSuccess={handleRegistrationSuccess} />
+        ) : (
+          <Login setToken={setToken} />
+        )}
+        <button className="question" onClick={() => setIsRegistering(!isRegistering)}>
+          {isRegistering ? "Already have an account? Login" : "New user? Register"}
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="todo-container">
-      {errors && <p>{errors}</p>}
+      {/* {errors && <p>{errors}</p>} */}
+      <button className="logout-btn" onClick={handleLogout}>Logout</button>
+
       {!projectSelected ? (
         <ProjectList setTodos={handleProjectSelect} />
       ) : (
@@ -116,14 +214,13 @@ function App() {
           </div>
 
           <Search addTodo={addTodo} />
-          <br></br>
-          <hr></hr>
-        <br></br>
-          {/* Display separate containers for Pending and Completed tasks */}
+          <br />
+          <hr />
+          <br />
           <div className="todo-lists">
             <div className="pending-todos">
               <h3>Pending Tasks</h3>
-              <br></br>
+              <br />
               <TodoList
                 todos={pendingTodos}
                 delTodo={delTodo}
@@ -131,12 +228,12 @@ function App() {
                 complete_todo={completeTodo}
               />
             </div>
-            <br></br>
-            <hr></hr>
-            <br></br>
+            <br />
+            <hr />
+            <br />
             <div className="completed-todos">
               <h3>Completed Tasks</h3>
-              <br></br>
+              <br />
               <TodoList
                 todos={completedTodos}
                 delTodo={delTodo}
@@ -152,7 +249,6 @@ function App() {
             </div>
           </div>
 
-          {/* Project Name Update Modal */}
           {editingProjectName && (
             <div className="modal-container">
               <div className="modal">
@@ -166,7 +262,7 @@ function App() {
                   <input
                     type="text"
                     placeholder="Update Project Name"
-                    value={newProjectName}
+                    value={newProjectName} // This will now show the original project name
                     onChange={(e) => setNewProjectName(e.target.value)}
                     required
                   />
