@@ -23,7 +23,7 @@ This project is a Todo application built using Python Django for the backend and
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/MUHAMMED-FARIZ-KP/tododrf
 2. Create a virtual environment and activate it:
     ```bash
     python -m venv venv
@@ -31,21 +31,18 @@ This project is a Todo application built using Python Django for the backend and
 3. Install dependencies: 
     ```bash
     pip install -r requirements.txt
-4. Navigate to the backend directory.
-    ```bash
-    cd tododrf
-5. Navigate to the frontend directory and install dependencies:
+4. Navigate to the frontend directory and install dependencies:
     ```bash
     cd todo_app_react
     npm install
-6. Set up the database and run migrations:
+5. Set up the database and run migrations:
     ```bash
     cd tododrf
     python manage.py migrate
-7. Run the backend server:
+6. Run the backend server:
     ```bash
     python manage.py runserver
-8. Run the frontend server:
+7. Run the frontend server:
     ```bash
     cd todo_app_react
     npm run dev
@@ -53,15 +50,21 @@ This project is a Todo application built using Python Django for the backend and
 ## Usage
 - Visit http://localhost:8000 for the backend API.
 - Visit http://localhost:5173/ for the frontend application.
+- Register a new user
+- Login and explore My todo Application
 
-## API Endpoints
+<!-- ## API Endpoints
 - User Registration: POST /register/
 - User Login: POST /login/
 - Todo List: GET /todos/
 - Todo Detail:GET /todos/<int:pk>/
 - Project List:GET /projects/
 - Project Detail:GET /projects/<int:pk>/
-- Project Todos:GET /projects/<int:pk>/todos/
+- Project Todos:GET /projects/<int:pk>/todos/ -->
 
 ## Contributing
 Feel free to submit issues and pull requests. Your contributions are welcome!
+
+## Contact
+- farizz7676off@gmail.com
+- +91 8113081411
