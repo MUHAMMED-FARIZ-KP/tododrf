@@ -16,7 +16,7 @@ This project is a Todo application built using Python Django for the backend and
 
 - **Frontend**: React, Vite
 - **Backend**: Python, Django
-- **Database**: (Specify your database, e.g., SQLite, PostgreSQL, etc.)
+- **Database**: SQLite
 - **Authentication**: Django Rest Framework
 
 ## Installation
@@ -28,21 +28,24 @@ This project is a Todo application built using Python Django for the backend and
     ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-3. Install dependencies: 
+3. Change the directory to project
+    ```bash
+    cd tododrf
+4. Install dependencies: 
     ```bash
     pip install -r requirements.txt
-4. Navigate to the frontend directory and install dependencies:
+5. Navigate to the frontend directory and install dependencies:
     ```bash
     cd todo_app_react
     npm install
-5. Set up the database and run migrations:
+6. Set up the database and run migrations:
     ```bash
     cd tododrf
     python manage.py migrate
-6. Run the backend server:
+7. Run the backend server:
     ```bash
     python manage.py runserver
-7. Run the frontend server:
+8. Run the frontend server:
     ```bash
     cd todo_app_react
     npm run dev
