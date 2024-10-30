@@ -1,6 +1,8 @@
-# Todo Application API
+# Todo Application
 
-This is a Todo application backend built using Django and Django Rest Framework (DRF), with endpoints for user registration, login, project management, and todo management.
+This is a Todo application developed using Python Django for the backend and React with Vite for the frontend. It allows users to manage their tasks efficiently by creating, updating, and deleting todos, all while providing user authentication.
+# Table of Contents
+- [Installation](#Installation)
 
 ## Setup Instructions
 
