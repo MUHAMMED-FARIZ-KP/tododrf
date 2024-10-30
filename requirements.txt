@@ -1,0 +1,6 @@
+Django==4.2
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.2.2  # For token-based authentication
+django-cors-headers==3.14.0  # For handling CORS
+requests==2.31.0  # For making HTTP requests, e.g., GitHub API
+gunicorn==20.1.0  # Optional: For deploying with a production server
