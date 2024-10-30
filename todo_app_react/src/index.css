@@ -305,6 +305,7 @@ input:focus, select:focus{
 }
 .back-btn{
   background: #42947a;
+  height: 40px;
   margin-right: 10px;
   margin-top: 10px;
   cursor: pointer;
@@ -512,5 +513,29 @@ input:focus, select:focus{
   border: none;
   border-radius: 5px;
   margin-bottom: 10px;
-  margin-left: 40%;
+  cursor: pointer;
+  
+  
+}
+.export-summary{
+  width: 80px;
+  padding: 10px;
+  background-color: #42947a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+
+ 
+
+}
+.sum-p{
+  color: white;
+  text-decoration: solid;
+}
+.button-container{
+  display: flex;
+  justify-content: center;/* Centers the buttons horizontally */
+  gap: 10px; 
 }
