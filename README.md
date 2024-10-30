@@ -57,7 +57,10 @@ This project is a Todo application built using Python Django for the backend and
 - User Registration: POST /register/
 - User Login: POST /login/
 - Todo List: GET /todos/
-- Create Todo: POST /todos/
-- Update Todo: PUT /todos/{id}/
-- Delete Todo: DELETE /todos/{id}/
+- Todo Detail:GET /todos/<int:pk>/
+- Project List:GET /projects/
+- Project Detail:GET /projects/<int:pk>/
+- Project Todos:GET /projects/<int:pk>/todos/
 
+## Contributing
+Feel free to submit issues and pull requests. Your contributions are welcome!
