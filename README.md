@@ -1,128 +1,124 @@
-Sure! Here’s a formatted README file based on the content you provided:
+# Todo Application API
 
-```markdown
-# Todo Application
+This is a Todo application backend built using Django and Django Rest Framework (DRF), with endpoints for user registration, login, project management, and todo management.
 
-This is a Todo application developed using Python Django for the backend and React with Vite for the frontend. It allows users to manage their tasks efficiently by creating, updating, and deleting todos, all while providing user authentication.
-
-## Table of Contents
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Folder Structure](#folder-structure)
-- [License](#license)
-
-## Features
-- User registration and login functionality.
-- Create, update, delete, and complete tasks.
-- Project-based todo organization.
-- Separate views for pending and completed tasks.
-- Export task summaries as Markdown files.
-- Responsive design for mobile and desktop.
-
-## Technologies Used
-- **Backend**: Python, Django, Django REST Framework
-- **Frontend**: React, Vite
-- **Database**: SQLite (or any other database of your choice)
-- **Authentication**: JSON Web Tokens (JWT) with `djangorestframework-simplejwt`
-
-## Installation
+## Setup Instructions
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) (for React)
-- [Python](https://www.python.org/downloads/) (for Django)
-- [pip](https://pip.pypa.io/en/stable/) (for Python package management)
+- Python 3.x
+- Django
+- Django Rest Framework (DRF)
+- Django Rest Framework SimpleJWT for token-based authentication
 
-### Backend Setup
-1. Clone the repository:
-   ```bash
-   git clone <your-repo-url>
-   cd <your-backend-directory>
-   ```
+### Installation
 
-2. Create a virtual environment and activate it:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   ```
+1. **Clone the Repository**
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+    ```bash
+    git clone <repository_url>
+    cd <repository_name>
+    ```
 
-4. Run database migrations:
-   ```bash
-   python manage.py migrate
-   ```
+2. **Install Dependencies**
 
-5. Create a superuser (optional):
-   ```bash
-   python manage.py createsuperuser
-   ```
+    Make sure you have a `requirements.txt` file with the following content:
 
-6. Start the Django server:
-   ```bash
-   python manage.py runserver
-   ```
+    ```plaintext
+    Django==4.2
+    djangorestframework==3.14.0
+    djangorestframework-simplejwt==5.2.2
+    ```
 
-### Frontend Setup
-1. Open a new terminal and navigate to the frontend directory:
-   ```bash
-   cd <your-frontend-directory>
-   ```
+    Then install the dependencies:
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-3. Start the React application:
-   ```bash
-   npm run dev
-   ```
+3. **Run Migrations**
 
-## Usage
+    ```bash
+    python manage.py migrate
+    ```
 
-1. Navigate to `http://localhost:3000` in your web browser to access the application.
-2. Register a new account or log in with an existing account.
-3. Create projects and manage your todos by adding, updating, deleting, and marking them as completed.
-4. Use the export functionality to generate a summary of completed tasks.
+4. **Create a Superuser (optional)**
+
+    ```bash
+    python manage.py createsuperuser
+    ```
+
+5. **Run the Server**
+
+    ```bash
+    python manage.py runserver
+    ```
+
+6. **API Testing**
+
+    You can test the API endpoints using tools like [Postman](https://www.postman.com/) or [curl](https://curl.se/).
 
 ## API Endpoints
 
-- **User Registration**: `POST /register/`
-  - Body: `{ "username": "string", "password": "string" }`
-  
-- **User Login**: `POST /login/`
-  - Body: `{ "username": "string", "password": "string" }`
-  
-- **Todo List**: `GET /todos/`
-  - Retrieves all todos (requires authentication).
-  
-- **Create Todo**: `POST /todos/`
-  - Body: `{ "task": "string", "project": "integer" }`
-  
-- **Update Todo**: `PUT /todos/{id}/`
-  - Body: `{ "task": "string", "completed": "boolean" }`
-  
-- **Delete Todo**: `DELETE /todos/{id}/`
+### User Authentication
 
-## Folder Structure
-```
-/todo-application
-├── /backend
-│   ├── /your_django_project
-│   ├── manage.py
-│   └── requirements.txt
-└── /frontend
-    ├── /src
-    ├── package.json
-    └── vite.config.js
-```
+#### Register User
+- **URL:** `/register/`
+- **Method:** `POST`
+- **Description:** Registers a new user.
+
+#### Login User
+- **URL:** `/login/`
+- **Method:** `POST`
+- **Description:** Logs in a user and returns an authentication token if successful.
+
+### Todo Endpoints
+
+#### Get All Todos
+- **URL:** `/todos/`
+- **Method:** `GET`
+- **Description:** Retrieves a list of all todos.
+
+#### Get Specific Todo by ID
+- **URL:** `/todos/<int:pk>/`
+- **Method:** `GET`, `PUT`, `DELETE`
+- **Description:** Retrieves, updates, or deletes a specific todo by its ID.
+
+### Project Endpoints
+
+#### Get All Projects
+- **URL:** `/projects/`
+- **Method:** `GET`
+- **Description:** Retrieves a list of all projects.
+
+#### Get Specific Project by ID
+- **URL:** `/projects/<int:pk>/`
+- **Method:** `GET`, `PUT`, `DELETE`
+- **Description:** Retrieves, updates, or deletes a specific project by its ID.
+
+#### Get Todos for a Specific Project
+- **URL:** `/projects/<int:pk>/todos/`
+- **Method:** `GET`
+- **Description:** Retrieves all todos associated with a specific project by the project ID.
+
+## Example URLs
+
+Use the following URLs to access the API:
+
+- `http://127.0.0.1:8000/todos/` - Get all todos
+- `http://127.0.0.1:8000/todos/<id>/` - Get, update, or delete a specific todo
+- `http://127.0.0.1:8000/projects/` - Get all projects
+- `http://127.0.0.1:8000/projects/<id>/todos/` - Get todos for a specific project
+
+## Additional Information
+
+- **Authentication:** The API uses token-based authentication. Use your authentication token in the `Authorization` header as `Bearer <token>`.
+- **Response Format:** All responses are in JSON format.
+- **Error Handling:** Standard HTTP status codes are used for success and error handling.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
+
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
+---
+
+Happy coding!
