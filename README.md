@@ -1,7 +1,8 @@
+
 # Todo Application
 
+https://github.com/user-attachments/assets/ed6b2fc6-b039-4092-9fc1-2e5f4ca985f6
 ## Overview
-
 This project is a Todo application built using Python Django for the backend and React with Vite for the frontend. It allows users to manage their tasks efficiently with user authentication.
 
 ## Features
