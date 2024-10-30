@@ -23,3 +23,11 @@ This project is a Todo application built using Python Django for the backend and
 1. Clone the repository:
    ```bash
    git clone <repository-url>
+2. Install dependencies: 
+    ```bash
+    pip install -r requirements.txt
+
+2. Navigate to the backend directory.
+    ```bash
+    cd backend
+    
